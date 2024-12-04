@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kirim Email</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <h2>Kirim Email</h2>
+    <form id="emailForm">
+        <label for="senderName">Nama Pengirim:</label>
+        <input type="text" id="senderName" name="senderName" required><br><br>
+
+        <label for="senderEmail">Email Pengirim:</label>
+        <input type="email" id="senderEmail" name="senderEmail" required><br><br>
+
+        <label for="email">Email Penerima:</label>
+        <input type="email" id="email" name="email" required><br><br>
+
+        <label for="subject">Subjek:</label>
+        <input type="text" id="subject" name="subject" required><br><br>
+
+        <label for="message">Pesan:</label><br>
+        <textarea id="message" name="message" rows="4" cols="50" required></textarea><br><br>
+
+        <button type="submit">Kirim Email</button>
+    </form>
+
+    <div id="responseMessage" style="margin-top: 20px;"></div>
+
+    <script>
+        $(document).ready(function() {
+            // Tangani pengiriman formulir
+            $('#emailForm').on('submit', function(event) {
+                event.preventDefault();
+
+                const formData = {
+                    senderName: $('#senderName').val(),  // Nama pengirim
+                    senderEmail: $('#senderEmail').val(),  // Email pengirim
+                    to: $('#email').val(),  // Email penerima
+                    subject: $('#subject').val(),  // Subjek email
+                    text: $('#message').val(),  // Pesan email
+                };
+
+                // Kirim data ke server backend untuk mengirim email
+                $.ajax({
+                    url: 'http://77.37.54.94:3000/send-email',
+                    type: 'POST',
+                    data: JSON.stringify(formData),
+                    contentType: 'application/json',
+                    success: function(response) {
+                        $('#responseMessage').html(`<p style="color: green;">${response.message}</p>`);
+                    },
+                    error: function(xhr, status, error) {
+                        $('#responseMessage').html(`<p style="color: red;">${xhr.responseJSON.message}</p>`);
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
